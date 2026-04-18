@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Gold Price Calculator - Precious Metal Value Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #f6d365;
+            box-shadow: 0 0 0 3px rgba(246, 211, 101, 0.1);
+        }
+
+        .purity-presets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .preset-btn {
+            background: #f5f5f5;
+            border: none;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .preset-btn:hover {
+            background: #f6d365;
+            transform: translateY(-2px);
+        }
+
+        .result {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .result-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .result-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .result-sub {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            font-size: 12px;
+            color: #666;
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .result-value {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ Gold Price Calculator</h1>
+            <p>Calculate real gold value based on purity</p>
+        </div>
+
+        <div class="content">
+            <div class="input-group">
+                <label>💰 Daily Gold Price (per gram)</label>
+                <input type="number" id="goldPrice" placeholder="Enter gold price per gram" step="any" value="75.00">
+                <small style="color: #666; display: block; margin-top: 5px;">Example: 75 USD per gram</small>
+            </div>
+
+            <div class="input-group">
+                <label>🔬 Gold Purity</label>
+                <select id="purityType">
+                    <option value="percentage">Percentage (%)</option>
+                    <option value="karat">Karat (K)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <input type="number" id="purityValue" placeholder="Enter purity value" step="any" value="99.9">
+                <div class="purity-presets">
+                    <button type="button" class="preset-btn" data-purity="99.9">24K (99.9%)</button>
+                    <button type="button" class="preset-btn" data-purity="91.67">22K (91.67%)</button>
+                    <button type="button" class="preset-btn" data-purity="75.0">18K (75%)</button>
+                    <button type="button" class="preset-btn" data-purity="58.5">14K (58.5%)</button>
+                    <button type="button" class="preset-btn" data-purity="41.7">10K (41.7%)</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>⚖️ Weight (grams)</label>
+                <input type="number" id="weight" placeholder="Enter weight in grams" step="any" value="10">
+            </div>
+
+            <div class="result">
+                <div class="result-label">💰 Calculated Gold Value</div>
+                <div class="result-value" id="calculatedValue">$0.00</div>
+                <div class="result-sub" id="calculationDetail">Enter values to calculate</div>
+            </div>
+
+            <div class="info-card">
+                <div class="info-row">
+                    <span class="info-label">Base Price per gram:</span>
+                    <span class="info-value" id="displayBasePrice">$0.00</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Purity Percentage:</span>
+                    <span class="info-value" id="displayPurity">0%</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Pure Gold Price per gram:</span>
+                    <span class="info-value" id="displayPurePrice">$0.00</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Total Value:</span>
+                    <span class="info-value" id="displayTotal">$0.00</span>
+                </div>
+            </div>
+
+            <button onclick="calculatePrice()">🔄 Calculate Now</button>
+            <button onclick="resetForm()" style="background: #6c757d; margin-top: 10px;">🗑️ Reset</button>
+        </div>
+
+        <div class="footer">
+            Formula: Price × (Purity ÷ 100) × Weight<br>
+            For Karat: Purity% = Karat ÷ 24 × 100
+        </div>
+    </div>
+
+    <script>
+        // Formula function
+        function calculateGoldPrice(pricePerGram, purityPercentage, weightInGrams) {
+            // Formula: Total Value = Price per gram × (Purity% / 100) × Weight
+            const pureGoldPrice = pricePerGram * (purityPercentage / 100);
+            const totalValue = pureGoldPrice * weightInGrams;
+            return {
+                pureGoldPrice: pureGoldPrice,
+                totalValue: totalValue
+            };
+        }
+
+        // Convert karat to percentage
+        function karatToPercentage(karat) {
+            return (karat / 24) * 100;
+        }
+
+        // Main calculation function
+        function calculatePrice() {
+            // Get input values
+            let pricePerGram = parseFloat(document.getElementById('goldPrice').value);
+            const purityType = document.getElementById('purityType').value;
+            let purityValue = parseFloat(document.getElementById('purityValue').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+
+            // Validation
+            let hasError = false;
+            
+            if (isNaN(pricePerGram) || pricePerGram <= 0) {
+                alert('Please enter a valid gold price (greater than 0)');
+                hasError = true;
+            }
+            
+            if (isNaN(purityValue) || purityValue <= 0) {
+                alert('Please enter a valid purity value (greater than 0)');
+                hasError = true;
+            }
+            
+            if (isNaN(weight) || weight <= 0) {
+                alert('Please enter a valid weight (greater than 0)');
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            // Convert purity to percentage if needed
+            let purityPercentage;
+            if (purityType === 'karat') {
+                if (purityValue > 24) {
+                    alert('Karat value cannot exceed 24');
+                    return;
+                }
+                purityPercentage = karatToPercentage(purityValue);
+                document.getElementById('purityValue').value = purityPercentage.toFixed(2);
+                document.getElementById('purityType').value = 'percentage';
+            } else {
+                if (purityValue > 100) {
+                    alert('Percentage cannot exceed 100%');
+                    return;
+                }
+                purityPercentage = purityValue;
+            }
+
+            // Calculate using the formula
+            const result = calculateGoldPrice(pricePerGram, purityPercentage, weight);
+            
+            // Update display
+            document.getElementById('calculatedValue').innerHTML = formatCurrency(result.totalValue);
+            document.getElementById('calculationDetail').innerHTML = 
+                `${formatCurrency(pricePerGram)} × ${purityPercentage}% × ${weight}g = ${formatCurrency(result.totalValue)}`;
+            
+            // Update info card
+            document.getElementById('displayBasePrice').innerHTML = formatCurrency(pricePerGram);
+            document.getElementById('displayPurity').innerHTML = `${purityPercentage.toFixed(2)}%`;
+            document.getElementById('displayPurePrice').innerHTML = formatCurrency(result.pureGoldPrice);
+            document.getElementById('displayTotal').innerHTML = formatCurrency(result.totalValue);
+            
+            // Store in localStorage for persistence
+            saveToLocalStorage();
+        }
+        
+        // Format currency
+        function formatCurrency(value) {
+            return '$' + value.toFixed(2);
+        }
+        
+        // Reset form
+        function resetForm() {
+            document.getElementById('goldPrice').value = '75.00';
+            document.getElementById('purityType').value = 'percentage';
+            document.getElementById('purityValue').value = '99.9';
+            document.getElementById('weight').value = '10';
+            calculatePrice();
+        }
+        
+        // Save to localStorage
+        function saveToLocalStorage() {
+            const data = {
+                goldPrice: document.getElementById('goldPrice').value,
+                purityType: document.getElementById('purityType').value,
+                purityValue: document.getElementById('purityValue').value,
+                weight: document.getElementById('weight').value
+            };
+            localStorage.setItem('goldCalculatorData', JSON.stringify(data));
+        }
+        
+        // Load from localStorage
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem('goldCalculatorData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                document.getElementById('goldPrice').value = data.goldPrice;
+                document.getElementById('purityType').value = data.purityType;
+                document.getElementById('purityValue').value = data.purityValue;
+                document.getElementById('weight').value = data.weight;
+            }
+            calculatePrice();
+        }
+        
+        // Event listeners for auto-calculation
+        document.getElementById('goldPrice').addEventListener('input', calculatePrice);
+        document.getElementById('purityType').addEventListener('change', function() {
+            if (this.value === 'karat') {
+                document.getElementById('purityValue').value = '24';
+            }
+            calculatePrice();
+        });
+        document.getElementById('purityValue').addEventListener('input', calculatePrice);
+        document.getElementById('weight').addEventListener('input', calculatePrice);
+        
+        // Preset buttons
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const purity = parseFloat(this.getAttribute('data-purity'));
+                document.getElementById('purityType').value = 'percentage';
+                document.getElementById('purityValue').value = purity;
+                calculatePrice();
+            });
+        });
+        
+        // Load saved data on startup
+        loadFromLocalStorage();
+    </script>
+</body>
+</html>
