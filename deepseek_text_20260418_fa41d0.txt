@@ -1,0 +1,2 @@
+Total Value = Daily Gold Price × (Purity Percentage ÷ 100) × Weight
+For Karat: Purity% = Karat ÷ 24 × 100
